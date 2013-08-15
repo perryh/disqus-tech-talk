@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section data-markdown>
+					<script type="text/template">
+						# Intern Tech Talk
+
+						Perry Huang
+
+						@perry_huang
+
+						Summer 2013
+
+						![alt text][disqus]
+
+						[disqus]: http://perryhuang.com/disqus/logo-alt-medium.png "Disqus"
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Summer Overview
+
+						* **First week:** Got onboard
+
+						* **Weeks 2-3:** Project strace-explain
+
+						* **Week 4:** Learned about internals of Disqus, Django, Memcached, Cassandra, Redis, and more
+
+						* **Week 5-6:** Analyzed Memcached Usage at Disqus
+
+						* **Weeks 7-12:** Worked on Disqus and other things
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## First week: Got onboard
+
+						Onboarding was *difficult*, but I survived. As the only intern, I knew I had **huge** responsibilities.
+
+						1. I hardly knew anything about Disqus, but got a lot of help from the team.
+
+						  "What's Promoted Discovery, Storm, Sentry, Jones, Gargoyle, and etc.?"
+
+						2. I wanted to fix Disqus. I was learning throughout the summer and made more of an impact each week.
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Weeks 2-3: `strace-explain`
+
+						Worked on `strace-explain`, a Ruby gem that can be used to trace and analyze system calls for any user-level process. It reveals time being spent waiting for networked I/O from different resources. This can be used in debugging the Django dev server.
+
+						*Source:*
+						```
+						http://github.com/disqus/strace-explain/
+						```
+
+						*Install:*
+						```
+						$ gem install strace-explain
+						```
+
+						```
+						Disquss-MacBook-Pro:~ $ strace-explain -h
+						Usage: strace-explain -p [PID]
+						   or: strace-explain [command]
+
+						Options:
+						    -p, --pid N                      Attach to process PID N.
+						    -t, --time N                     Run analysis for N seconds.
+						    -h, --help                       Show this message
+						    -v, --version                    Show version
+						```
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Weeks 2-3: `strace-explain`
+						```
+						http://strace-explain.herokuapp.com/analysis/53558744580160
+						```
+						![part1]
+						![part2]
+						
+
+						[part1]: images/part1.png
+						[part2]: images/part2.png
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+					## Week 4 and beyond: Learning
+					Learned about the internals of various tools that we use at Disqus, as well as Disqus itself:
+
+					* Memcached and alternatives (e.g. mattproxy, mattdb, twitter-memcached, fatcache)
+					* Redis, Cassandra, PgSQL
+					* Indoor golf
+					* Disqus, Django, and of course, Python
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Disqus Ops Team
+						![alt text][daftpunk]
+
+						[daftpunk]: http://i1.sndcdn.com/artworks-000011712673-v2xk97-original.jpg?5ffe3cd "Harder, Better, Faster, Stronger"
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Meet the Disqus Ops Team
+
+						* Harder - Matt
+						* Better - John
+						* Faster - seems to be me
+						* Stronger - Mike
+						
+						<iframe width="400" height="80" src="https://rd.io/i/QRka0TdBEjY/" frameborder="0"></iframe>
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Week 5-6: Analyzed Memcached Usage at Disqus
+						
+						Created a tool to analyze Memcached traffic from real-time or previously recorded TCP/UDP dumps.
+
+						Source:
+						```
+						github link to memcached analysis tools
+						```
+						Results:
+						```
+						https://gist.github.com/perryh/07ef6828a9351f2604eb
+						```
+
+						At Disqus, most of our cache keys start with a group name, so we can adjust our code to optimize cache usage. Here are results from one group:
+						```
+						Type: :8:NewPostTreePaginator
+							145810 gets = 9767 hits + 136043 misses
+							153451 sets
+							(1.2299291936654724% of total gets)
+							(93.30155682051986% cache miss rate)
+							(5.8092943561057195% of total sets)
+							Min. payload length: 29
+								25th percentile: 29
+								50th percentile: 2095
+								75th percentile: 8518
+							Max. payload length: 273910
+						```
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Lessons Learned Regarding Caching
+
+						*"Don't be retarded."* ~ Ben
+
+						### Lesson 1
+						
+						Use the cache properly. Typically, we would first check our cache for our values before we query the database. If we do end up query the database, we would need to set the values into cache for them to be retrieved later. I found a few uses of the cache this summer where we did not actually set the keys we were querying.
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Lessons Learned Regarding Caching
+
+						### Lesson 2
+						
+						Avoid caching keys that have high cache miss rates or are never called within their lifetime. Large keys with this property are especially bad.
+
+						Case study from our Paginator:
+						```
+						Type: :8:NewPostTreePaginator
+							145810 gets = 9767 hits + 136043 misses
+							153451 sets
+							(1.2299291936654724% of total gets)
+							(93.30155682051986% cache miss rate)
+							(5.8092943561057195% of total sets)
+							Min. payload length: 29
+								25th percentile: 29
+								50th percentile: 2095
+								75th percentile: 8518
+							Max. payload length: 273910
+						```
+						These keys can cause Memcached to evict other keys that are called more often within their lifetime. They are a waste of memory.
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Lessons Learned Regarding Caching
+
+						### Lesson 3
+						
+						Use cache.get_many and cache.set_many instead of looping cache.get and cache.set. This will dramatically decrease cache retrieval and setting from anywhere between 200 to 600 ms to a mere 60 ms on average.
+
+						Avoid this:
+						```
+						for o in objects:
+							result[o.pk] = cache.get(make_key(o.pk))
+						# Build list of cache miss keys, query them from database
+						...
+						for missing in missing_objects:
+							cache.set(make_key(missing.pk))
+						```
+
+						Do this:
+						```
+						cache_keys = [make_key(o.pk) for o in objects]
+						results = cache.get_many(cache_keys)
+						# Build list of cache miss keys, query them from database,
+						# and build a dict of cache miss keys and values
+						...
+						cache.set_many(missed_key_values)
+						```
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Weeks 7-End: Speeding up Disqus
+
+						### Caching our API responses
+
+						Using Varnish and the HTTP cache-control header helped decrease response time. While browsing New Relic, I noticed that some of our API endpoints were responding very slowly. New Relic reported that our 'Community' tab on large sites, such as CNN, would take upwards of 9 seconds to respond. This was confirmed by my own experience after experimenting on CNN, IGN, and The Atlantic.  
+						
+						With help from Matt, I got these API responses to respond in ~100 ms through the use of Varnish. This leads to a great improvement in user experience.
+
+						![alt text][api1]
+						
+						[api1]: images/api1.png "API"
+					</script>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
