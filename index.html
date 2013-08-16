@@ -144,7 +144,7 @@
 					<script type="text/template">
 						## Disqus Ops Team
 						![alt text][daftpunk]
-
+						<iframe width="400" height="80" src="https://rd.io/i/QRka0TdBEjY/" frameborder="0"></iframe>
 						[daftpunk]: http://i1.sndcdn.com/artworks-000011712673-v2xk97-original.jpg?5ffe3cd "Harder, Better, Faster, Stronger"
 					</script>
 				</section>
@@ -273,11 +273,72 @@
 						With help from Matt, I got these API responses to respond in ~100 ms through the use of Varnish. This leads to a great improvement in user experience.
 
 						![alt text][api1]
-						
+
 						[api1]: images/api1.png "API"
 					</script>
 				</section>
 
+				<section data-markdown>
+					<script type="text/template">
+						## Weeks 7-End: Speeding up Disqus
+
+						### Removing keys that fill up cache
+
+						We used to have a key group that was cached in our cluster of Memcached servers. This proved to be really bad to cache:
+						```
+						Type: :8:html
+							1673394 gets = 624777 hits + 1048617 misses
+							1292953 sets
+							(14.11532907965599% of total gets)
+							(62.66408269660343% cache miss rate)
+							(48.94816303321555% of total sets)
+							Min. payload length: 32
+								25th percentile: 70
+								50th percentile: 122
+								75th percentile: 255
+							Max. payload length: 29261
+						```
+
+						While a 62% miss rate is not the worst in the world, this key group did account for 48% of our cache sets. Removing this from our main Memcached cluster, along with some of my other fixes, allowed us to increase are cache hit ratio from 80% to over 90%. We now have this key group in its own cache server being handled by the LRU eviction policy, where it cannot affect other key groups.
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Weeks 7-End: Things that did not work
+
+						### Rewrite our Paginator in C++
+
+						I spent a lot of time learning to use SciPy Weave and Python Boost, but found the idea of rewriting the Paginator in C++. We have other plans in the pipeline to improve the Paginator.
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## tl;dr
+
+						* learned a lot this summer
+						* made performance upgrades to Disqus
+						* made open source contributions
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Thanks
+
+						* everyone in operations team for helping me throughout the summer
+						* everyone for being awesome
+						* Mike for being my mentor and organizing an memorable sailing trip
+						* Jason and Daniel for forever branding me with my Disqus tattoo
+
+						![alt text][arm]
+
+						[arm]: images/arm.png "arm"
+					</script>
+				</section>
+
+						
 			</div>
 
 		</div>
